@@ -1,0 +1,334 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TRACKER BATTLE — Admin Dashboard</title>
+<style>
+:root{--bg:#090914;--panel:#151528;--purple:#8b5cf6;--orange:#ff9d3d;--text:#f7f5ff;--muted:#aaa7c5;--border:#302b4a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
+header{padding:20px;background:#111124;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:5}
+header h1{margin:0;font-size:22px}header p{margin:6px 0 0;color:var(--muted);font-size:12px}
+.layout{display:grid;grid-template-columns:220px minmax(0,1fr);min-height:100vh}
+aside{background:#101020;padding:18px;border-right:1px solid var(--border)}
+aside h3{color:var(--purple);font-size:12px;letter-spacing:2px}
+.nav{display:block;width:100%;padding:13px;margin:5px 0;border:0;border-radius:9px;background:transparent;color:var(--text);text-align:left;font-size:14px}
+.nav.active,.nav:active{background:#33215b}
+main{padding:20px;min-width:0}
+h2{margin-top:0}
+.muted{color:var(--muted);line-height:1.6}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:20px 0}
+.stat,.panel,.module{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:17px}
+.stat span{display:block;color:var(--muted);font-size:13px}
+.stat strong{display:block;font-size:30px;margin-top:12px}
+.module{margin:18px 0}
+.module h2{font-size:19px}
+label{display:block;margin:13px 0 6px;font-size:13px;color:#dcd7f4}
+input,select{width:100%;padding:12px;border:1px solid var(--border);border-radius:9px;background:#0d0d1b;color:white;font-size:15px}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}
+button{cursor:pointer}
+.primary{width:100%;margin-top:18px;padding:14px;border:0;border-radius:10px;background:linear-gradient(100deg,#a66bff,#ff9d3d);color:#160c25;font-weight:bold;font-size:15px}
+.secondary,.danger{padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:#211b39;color:white;margin:5px 5px 0 0}
+.danger{background:#481c30;border-color:#7c2944}
+.match-card{margin-top:12px;padding:15px;background:#0e0e1c;border:1px solid var(--border);border-radius:12px;overflow-wrap:anywhere}
+.match-card h3{margin:0 0 8px;color:#c6a5ff}
+.badge{display:inline-block;background:#302052;padding:5px 8px;border-radius:20px;font-size:11px;color:#e2d3ff}
+.empty{padding:18px;text-align:center;color:var(--muted);border:1px dashed var(--border);border-radius:10px}
+.hidden{display:none !important} main > section[aria-hidden="true"]{display:none !important}
+.notice{padding:12px;border-radius:9px;background:#201b37;color:#d8c8ff;font-size:13px}
+footer{text-align:center;padding:25px;color:var(--muted);font-size:12px}
+@media(max-width:650px){.layout{grid-template-columns:1fr}aside{border-right:0;border-bottom:1px solid var(--border);padding:10px;display:flex;flex-wrap:wrap;gap:5px}aside h3{width:100%;margin:5px}.nav{width:auto;flex:1;text-align:center;padding:10px 6px;font-size:12px}main{padding:14px}.form-grid{grid-template-columns:1fr}.stats{gap:9px}.stat{padding:13px}.stat strong{font-size:25px}}
+</style>
+</head>
+<body>
+<header>
+<h1>🟣 TRACKER BATTLE</h1>
+<p>ADMIN CONTROL CENTER · PLAY FAIR. EARN RESPECT.</p>
+</header><div class="layout">
+<aside>
+<h3>ADMIN MENU</h3>
+<button class="nav active" data-target="overview">📊 Overview</button>
+<button class="nav" data-target="matches">🎮 Match Management</button>
+<button class="nav" data-target="players">👥 Players</button>
+<button class="nav" data-target="coins">🪙 Coin Management</button>
+<button class="nav" data-target="settings">⚙️ Settings</button>
+</aside><main>
+<section id="overview">
+<h2>Gaming Control Center</h2>
+<p class="muted">Manage your tournament platform from one place.</p>
+<div class="stats">
+<div class="stat"><span>👥 Total Players</span><strong>0</strong></div>
+<div class="stat"><span>🏆 Total Matches</span><strong id="totalMatches">0</strong></div>
+<div class="stat"><span>🎮 Active Matches</span><strong id="activeMatches">0</strong></div>
+<div class="stat"><span>🪙 Pending Deposits</span><strong>0</strong></div>
+<div class="stat"><span>💸 Pending Withdrawals</span><strong>0</strong></div>
+</div>
+<div class="notice">Demo mode: data is stored in this browser only.</div>
+</section><section id="matches" class="hidden">
+<div class="module">
+<h2>🎮 Match Management</h2>
+<p class="muted">Create and manage Battle Royale, Clash Squad, Lone Wolf and LWO matches.</p>
+<form id="matchForm">
+<input type="hidden" id="editId" value="">
+<div class="form-grid">
+<div><label for="matchName">Match Name *</label><input id="matchName" required placeholder="e.g. Tracker Battle #1"></div>
+<div><label for="matchMode">Mode *</label><select id="matchMode" required><option value="">Select mode</option><option>Battle Royale</option><option>Clash Squad</option><option>Lone Wolf</option><option>LWO</option><option>Free Match</option></select></div>
+<div><label for="matchMap">Map</label><select id="matchMap"><option>Bermuda</option><option>Purgatory</option><option>Kalahari</option><option>Alpine</option><option>NexTerra</option><option>Random</option></select></div>
+<div><label for="matchDate">Date *</label><input id="matchDate" type="date" required></div>
+<div><label for="matchTime">Time *</label><input id="matchTime" type="time" required></div>
+<div><label for="entryFee">Entry Fee (coins)</label><input id="entryFee" type="number" min="0" value="0"></div>
+<div><label for="prizePool">Prize Pool (coins) *</label><input id="prizePool" type="number" min="0" value="0" required></div>
+<div><label for="killReward">Per Kill Reward</label><input id="killReward" type="number" min="0" value="0"></div>
+<div><label for="playerLimit">Player Limit *</label><input id="playerLimit" type="number" min="2" value="48" required></div>
+<div><label for="matchPerspective">Perspective</label><select id="matchPerspective"><option>TPP</option><option>FPP</option></select></div>
+<div><label for="roomId">Room ID</label><input id="roomId" placeholder="Not set"></div>
+<div><label for="roomPassword">Room Password</label><input id="roomPassword" placeholder="Not set"></div>
+<div><label for="matchStatus">Status</label><select id="matchStatus"><option>Upcoming</option><option>Ongoing</option><option>Completed</option></select></div>
+</div>
+<button class="primary" type="submit" id="saveMatchBtn">＋ Create Match</button>
+<button class="secondary hidden" type="button" id="cancelEditBtn">Cancel Edit</button>
+</form>
+</div><div class="module">
+<h2>📋 Created Matches</h2>
+<p class="muted">Your saved matches appear here.</p>
+<div id="matchList"><div class="empty">Loading matches…</div></div>
+</div>
+</section><section id="players" class="hidden">
+<div class="module"><h2>👥 Player Management</h2><p class="muted">Player suspension, bans and activity logs will be added in a future module.</p><span class="badge">NEXT MODULE</span></div>
+</section><section id="coins" class="hidden">
+<div class="module"><h2>🪙 Coin Management</h2><p class="muted">Deposit requests, withdrawals, player balances and transaction history will be added in a future module.</p><span class="badge">NEXT MODULE</span></div>
+</section><section id="settings" class="hidden">
+<div class="module"><h2>⚙️ Admin Settings</h2><p class="muted">Security, referral settings and admin activity logs will be added in a future module.</p><span class="badge">NEXT MODULE</span></div>
+</section>
+<footer>TRACKER BATTLE · PLAY FAIR. EARN RESPECT.</footer>
+</main>
+</div><script>
+(function(){
+"use strict";
+const $ = id => document.getElementById(id);
+const form = $("matchForm");
+const list = $("matchList");
+const storageKey = "trackerBattleMatches";
+let matches = [];
+
+function loadMatches(){
+  try {
+    const saved = JSON.parse(localStorage.getItem(storageKey) || "[]");
+    matches = Array.isArray(saved) ? saved : [];
+  } catch(e) {
+    matches = [];
+  }
+}
+
+function saveMatches(){
+  try {
+    localStorage.setItem(storageKey, JSON.stringify(matches));
+    return true;
+  } catch(e) {
+    alert("Could not save. Browser storage may be unavailable.");
+    return false;
+  }
+}
+
+function makeText(tag, text){
+  const el = document.createElement(tag);
+  el.textContent = text;
+  return el;
+}
+
+function renderMatches(){
+  list.replaceChildren();
+  $("totalMatches").textContent = matches.length;
+  $("activeMatches").textContent = matches.filter(m => m.matchStatus === "Ongoing").length;
+
+  if(matches.length === 0){
+    list.appendChild(makeText("div", "No matches created yet."));
+    list.lastChild.className = "empty";
+    return;
+  }
+
+  matches.forEach(match => {
+    const card = document.createElement("article");
+    card.className = "match-card";
+    card.appendChild(makeText("h3", match.matchName || "Untitled Match"));
+    card.appendChild(makeText("span", match.matchMode || "Mode not set")).className = "badge";
+    card.appendChild(makeText("p", "Map: " + (match.matchMap || "—") + " | " + (match.matchPerspective || "TPP")));
+    card.appendChild(makeText("p", "Date: " + (match.matchDate || "—") + " | Time: " + (match.matchTime || "—")));
+    card.appendChild(makeText("p", "Entry: " + (match.entryFee || 0) + " coins | Prize: " + (match.prizePool || 0) + " coins"));
+    card.appendChild(makeText("p", "Players limit: " + (match.playerLimit || "—") + " | Status: " + (match.matchStatus || "Upcoming")));
+
+    const edit = makeText("button", "✏️ Edit");
+    edit.type = "button";
+    edit.className = "secondary";
+    edit.addEventListener("click", () => editMatch(match.id));
+    card.appendChild(edit);
+
+    const del = makeText("button", "🗑 Delete");
+    del.type = "button";
+    del.className = "danger";
+    del.addEventListener("click", () => deleteMatch(match.id));
+    card.appendChild(del);
+    list.appendChild(card);
+  });
+}
+
+function resetForm(){
+  form.reset();
+  $("editId").value = "";
+  $("saveMatchBtn").textContent = "＋ Create Match";
+  $("cancelEditBtn").classList.add("hidden");
+  $("entryFee").value = "0";
+  $("prizePool").value = "0";
+  $("killReward").value = "0";
+  $("playerLimit").value = "48";
+}
+
+form.addEventListener("submit", function(event){
+  event.preventDefault();
+  if(!form.reportValidity()) return;
+
+  const data = {
+    id: $("editId").value || (Date.now().toString() + Math.random().toString(16).slice(2)),
+    matchName: $("matchName").value.trim(),
+    matchMode: $("matchMode").value,
+    matchMap: $("matchMap").value,
+    matchDate: $("matchDate").value,
+    matchTime: $("matchTime").value,
+    entryFee: $("entryFee").value || "0",
+    prizePool: $("prizePool").value || "0",
+    killReward: $("killReward").value || "0",
+    playerLimit: $("playerLimit").value || "48",
+    matchPerspective: $("matchPerspective").value,
+    roomId: $("roomId").value.trim(),
+    roomPassword: $("roomPassword").value.trim(),
+    matchStatus: $("matchStatus").value
+  };
+
+  const existingIndex = matches.findIndex(m => String(m.id) === String(data.id));
+  if(existingIndex >= 0) matches[existingIndex] = data;
+  else matches.unshift(data);
+
+  if(!saveMatches()){
+    loadMatches();
+    renderMatches();
+    return;
+  }
+
+  resetForm();
+  renderMatches();
+  $("matches").scrollIntoView({behavior:"smooth"});
+  alert(existingIndex >= 0 ? "Match updated!" : "Match created successfully!");
+});
+
+function editMatch(id){
+  const match = matches.find(m => String(m.id) === String(id));
+  if(!match) return;
+  Object.keys(match).forEach(key => {
+    const field = $(key);
+    if(field && key !== "id") field.value = match[key];
+  });
+  $("editId").value = match.id;
+  $("saveMatchBtn").textContent = "💾 Save Changes";
+  $("cancelEditBtn").classList.remove("hidden");
+  $("matches").scrollIntoView({behavior:"smooth"});
+}
+
+function deleteMatch(id){
+  if(!confirm("Delete this match?")) return;
+  const oldMatches = matches.slice();
+  matches = matches.filter(m => String(m.id) !== String(id));
+  if(!saveMatches()){
+    matches = oldMatches;
+  }
+  renderMatches();
+}
+
+$("cancelEditBtn").addEventListener("click", resetForm);
+
+// Reliable dashboard section navigation
+const navButtons = document.querySelectorAll("aside .nav");
+const dashboardSections = document.querySelectorAll("main > section");
+
+function openDashboardSection(targetId, clickedButton) {
+  const targetSection = document.getElementById(targetId);
+
+  if (!targetSection || !Array.from(dashboardSections).includes(targetSection)) {
+    console.error("Dashboard section not found:", targetId);
+    return;
+  }
+
+  dashboardSections.forEach(section => {
+    section.classList.add("hidden");
+    section.setAttribute("aria-hidden", "true");
+  });
+
+  targetSection.classList.remove("hidden");
+  targetSection.setAttribute("aria-hidden", "false");
+
+  navButtons.forEach(button => {
+    button.classList.toggle("active", button === clickedButton);
+    button.setAttribute("aria-current", button === clickedButton ? "page" : "false");
+  });
+
+  if (targetId === "matches") {
+    renderMatches();
+  }
+}
+
+navButtons.forEach(button => {
+  button.type = "button";
+  button.addEventListener("click", () => {
+    openDashboardSection(button.dataset.target, button);
+  });
+});
+
+// Keep Overview as the initial visible section
+dashboardSections.forEach(section => {
+  const isOverview = section.id === "overview";
+  section.classList.toggle("hidden", !isOverview);
+  section.setAttribute("aria-hidden", isOverview ? "false" : "true");
+});
+
+navButtons.forEach(button => {
+  const isOverview = button.dataset.target === "overview";
+  button.classList.toggle("active", isOverview);
+  button.setAttribute("aria-current", isOverview ? "page" : "false");
+});
+
+loadMatches();
+renderMatches();
+})();
+</script> <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyActaTtjXrrSVX50SmUIqzSlw4cv8JVIkk",
+  authDomain: "tracker-battle.firebaseapp.com",
+  projectId: "tracker-battle",
+  storageBucket: "tracker-battle.firebasestorage.app",
+  messagingSenderId: "906993309103",
+  appId: "1:906993309103:web:357498942ac316658d4b5a",
+  measurementId: "G-26FFQX4WSN"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+// 👇 Yahan apna admin email likho
+const ADMIN_EMAIL = "m1nx4ytgamer@gmail.com";
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.replace("Admin-login.html");
+    return;
+  }
+
+  if (user.email !== ADMIN_EMAIL) {
+    await signOut(auth);
+    alert("Admin access required.");
+    window.location.replace("Admin-login.html");
+  }
+});
+</script></body>
+</html>

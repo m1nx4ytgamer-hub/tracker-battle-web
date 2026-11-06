@@ -1,0 +1,108 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>TRACKER BATTLE | Admin Login</title>
+
+  <link rel="stylesheet" href="Css/Admin.css">
+</head>
+
+<body class="admin-login-page">
+
+  <main class="login-shell">
+
+    <section class="brand-panel">
+      <div class="brand-mark">TB</div>
+
+      <p class="eyebrow">TRACKER BATTLE</p>
+
+      <h1>
+        Gaming<br>
+        <span>Control Center</span>
+      </h1>
+
+      <p class="muted">
+        Manage matches, players, coins, announcements, and admin access.
+      </p>
+
+      <div class="brand-line"></div>
+
+      <p class="small-note">PLAY FAIR. EARN RESPECT.</p>
+    </section>
+
+    <section class="login-panel">
+
+      <div class="panel-top">
+        <span class="status-dot"></span>
+        <span>ADMIN ACCESS</span>
+      </div>
+
+      <h2 id="formTitle">Welcome back, Admin</h2>
+
+      <p class="muted" id="formDescription">
+        Sign in to continue to your control center.
+      </p>
+
+      <form id="loginForm">
+
+        <label for="adminUsername">Admin email</label>
+
+        <input
+          id="adminUsername"
+          type="email"
+          placeholder="Enter admin email"
+          autocomplete="username"
+          required
+        >
+
+        <label for="adminPassword">Password</label>
+
+        <input
+          id="adminPassword"
+          type="password"
+          placeholder="Enter password"
+          autocomplete="current-password"
+          required
+        >
+
+        <button class="primary-button" id="loginButton" type="submit">
+          Continue <span>→</span>
+        </button>
+
+        <button class="secondary-button" id="googleButton" type="button">
+          Continue with Google
+        </button>
+
+        <button class="secondary-button" id="resetButton" type="button">
+          Forgot password?
+        </button>
+
+        <p
+          id="formMessage"
+          class="form-message"
+          role="status"
+          aria-live="polite"
+        ></p>
+
+      </form>
+
+      <div class="security-note">
+        <span>🛡️</span>
+        <span>Never share admin passwords or verification codes.</span>
+      </div>
+
+      <p class="footer-note">
+        © <span id="year"></span> Tracker Battle
+      </p>
+
+    </section>
+
+  </main>
+
+  <script type="module" src="Js/Admin.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tracker Battle - Seat Selection</title>
+
+  <link rel="stylesheet" href="Css/seat-selection.css">
+</head>
+<body>
+
+  <main>
+    <div id="seat-selection-app"></div>
+  </main>
+
+  <script src="Js/seat-selection.js"></script>
+
+  <script>
+    // Demo: change matchType to solo, duo, or squad
+    SeatSelection.init({
+      matchType: "duo",
+      bookedSeats: [2, 5, 9],
+      lockedSeats: [12, 20]
+    });
+  </script>
+
+</body>
+</html>
